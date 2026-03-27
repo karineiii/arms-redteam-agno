@@ -1,0 +1,8 @@
+{
+  "vendors": [
+    { "name": "Hyperscaler-A", "service": "cloud hosting", "criticality": "high" },
+    { "name": "IAM-Provider-X", "service": "identity and access management", "criticality": "high" },
+    { "name": "CryptoAPI-Z", "service": "crypto transaction API", "criticality": "high" },
+    { "name": "SOC-Provider-Q", "service": "monitoring and incident response", "criticality": "medium" }
+  ]
+}

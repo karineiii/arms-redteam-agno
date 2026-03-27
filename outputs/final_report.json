@@ -1,0 +1,224 @@
+{
+  "recon": {
+    "assets": [
+      {
+        "name": "API Gateway",
+        "type": "external_interface",
+        "criticality": "high"
+      },
+      {
+        "name": "Transaction Ingestion Pipeline",
+        "type": "data_pipeline",
+        "criticality": "high"
+      },
+      {
+        "name": "Fraud Detection Model",
+        "type": "ml_model",
+        "criticality": "high"
+      },
+      {
+        "name": "AML Monitoring Engine",
+        "type": "analytics",
+        "criticality": "high"
+      },
+      {
+        "name": "Case Management Console",
+        "type": "internal_console",
+        "criticality": "medium"
+      },
+      {
+        "name": "Cloud IAM",
+        "type": "identity",
+        "criticality": "high"
+      },
+      {
+        "name": "Central Logging",
+        "type": "observability",
+        "criticality": "high"
+      },
+      {
+        "name": "Crypto API Connector",
+        "type": "third_party_api",
+        "criticality": "high"
+      }
+    ],
+    "critical_dependencies": [
+      {
+        "name": "Hyperscaler-A",
+        "service": "cloud hosting",
+        "criticality": "high"
+      },
+      {
+        "name": "IAM-Provider-X",
+        "service": "identity and access management",
+        "criticality": "high"
+      },
+      {
+        "name": "CryptoAPI-Z",
+        "service": "crypto transaction API",
+        "criticality": "high"
+      },
+      {
+        "name": "SOC-Provider-Q",
+        "service": "monitoring and incident response",
+        "criticality": "medium"
+      }
+    ],
+    "entry_points": [
+      {
+        "name": "API Gateway",
+        "risk": "high"
+      },
+      {
+        "name": "Crypto API Connector",
+        "risk": "high"
+      },
+      {
+        "name": "Case Management Console",
+        "risk": "medium"
+      }
+    ],
+    "data_flows": [
+      {
+        "source": "API Gateway",
+        "target": "Transaction Ingestion Pipeline"
+      },
+      {
+        "source": "Transaction Ingestion Pipeline",
+        "target": "Fraud Detection Model"
+      },
+      {
+        "source": "Fraud Detection Model",
+        "target": "AML Monitoring Engine"
+      }
+    ],
+    "attack_surface_map": [
+      "External API exposure",
+      "Third-party crypto API dependency",
+      "IAM misconfiguration risk",
+      "Logging and observability concentration risk"
+    ],
+    "assumptions": [
+      "ARMS depends on third-party APIs",
+      "Fraud detection relies on ML inputs",
+      "Critical services are cloud-hosted"
+    ],
+    "confidence_score": 0.84
+  },
+  "attack": {
+    "scenario_name": "Compromise of payment or crypto API",
+    "attack_path": [
+      "Enumerate exposed API entry points",
+      "Abuse weak validation on third-party connector",
+      "Inject plausible but malicious transaction patterns",
+      "Influence AML or fraud monitoring decisions"
+    ],
+    "target_assets": [
+      "API Gateway",
+      "Crypto API Connector",
+      "Transaction Ingestion Pipeline"
+    ],
+    "exploited_weaknesses": [
+      "Weak request validation",
+      "Overtrust in third-party API data",
+      "Insufficient transaction integrity checks"
+    ],
+    "observable_signals": [
+      "Abnormal transaction bursts",
+      "Inconsistent payload fields",
+      "Unexpected partner-side request patterns"
+    ],
+    "system_reaction": "Potential false negatives in fraud monitoring",
+    "break_point": "Insufficient integrity control on incoming third-party transactions"
+  },
+  "adversarial_ai": {
+    "adversarial_scenario": "Progressive poisoning of AI feedback loop",
+    "manipulated_features": [
+      "transaction_amount",
+      "destination_risk_score",
+      "customer_behavior_label"
+    ],
+    "poisoning_vector": "Injected mislabeled transaction samples into feedback or retraining pipeline",
+    "expected_model_failure": "Fraudulent patterns become gradually classified as legitimate",
+    "stealth_characteristics": [
+      "Low-volume gradual drift",
+      "No immediate outage",
+      "Operational metrics remain apparently stable"
+    ],
+    "explainability_gap": "Model decisions become harder to justify over time",
+    "monitoring_gap": "No robust data provenance and drift detection controls",
+    "confidence_score": 0.88
+  },
+  "compliance": {
+    "regulatory_gaps": [
+      {
+        "framework": "DORA",
+        "gap": "Critical third-party dependency insufficiently controlled"
+      },
+      {
+        "framework": "AI Act",
+        "gap": "Insufficient traceability and explainability of AI decisions"
+      },
+      {
+        "framework": "MiCA",
+        "gap": "Weak security controls around crypto-related operations"
+      },
+      {
+        "framework": "GDPR",
+        "gap": "Potential lack of governance over personal data in logs and model pipelines"
+      }
+    ],
+    "affected_controls": [
+      "Third-party risk management",
+      "Auditability",
+      "Logging and traceability",
+      "Model monitoring"
+    ],
+    "missing_evidence": [
+      "Resilience test results",
+      "Data lineage records",
+      "Model monitoring dashboard",
+      "Third-party audit evidence"
+    ],
+    "severity": "high",
+    "impacted_regulations": [
+      "DORA",
+      "MiCA",
+      "AI Act",
+      "GDPR"
+    ],
+    "justification": "The identified cyber and AI attack paths show insufficient resilience, monitoring, and evidence of control effectiveness.",
+    "remediation_actions": [
+      "Strengthen API validation and integrity checks",
+      "Implement data lineage and poisoning detection",
+      "Increase audit logging coverage",
+      "Test third-party resilience and reversibility"
+    ]
+  },
+  "risk": {
+    "global_risk_score": 0.82,
+    "financial_impact": "high",
+    "operational_impact": "high",
+    "regulatory_impact": "high",
+    "reputational_impact": "high",
+    "prioritized_findings": [
+      {
+        "rank": 1,
+        "finding": "Critical external API dependency not sufficiently controlled"
+      },
+      {
+        "rank": 2,
+        "finding": "AI pipeline vulnerable to progressive poisoning"
+      },
+      {
+        "rank": 3,
+        "finding": "Insufficient traceability and explainability"
+      },
+      {
+        "rank": 4,
+        "finding": "Lack of resilience evidence for critical services"
+      }
+    ],
+    "executive_summary": "ARMS presents a critical composite risk due to third-party API exposure, weak AI pipeline governance, and significant regulatory compliance gaps."
+  }
+}

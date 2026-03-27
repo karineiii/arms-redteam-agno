@@ -1,0 +1,14 @@
+{
+  "system_name": "ARMS",
+  "description": "Agentic Risk Monitoring System for transaction monitoring and fraud detection",
+  "components": [
+    { "name": "API Gateway", "type": "external_interface", "criticality": "high" },
+    { "name": "Transaction Ingestion Pipeline", "type": "data_pipeline", "criticality": "high" },
+    { "name": "Fraud Detection Model", "type": "ml_model", "criticality": "high" },
+    { "name": "AML Monitoring Engine", "type": "analytics", "criticality": "high" },
+    { "name": "Case Management Console", "type": "internal_console", "criticality": "medium" },
+    { "name": "Cloud IAM", "type": "identity", "criticality": "high" },
+    { "name": "Central Logging", "type": "observability", "criticality": "high" },
+    { "name": "Crypto API Connector", "type": "third_party_api", "criticality": "high" }
+  ]
+}
