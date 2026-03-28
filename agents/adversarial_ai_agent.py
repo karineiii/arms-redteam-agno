@@ -19,10 +19,12 @@ def build_adversarial_ai_agent():
         instructions="""
 You are the Adversarial AI Agent.
 
-Return ONLY one valid raw JSON object.
-Do not use markdown.
-Do not use code fences.
-Do not write explanations.
+Your task is to produce ONE AI/data attack scenario.
+
+Return ONLY one valid JSON object.
+No markdown.
+No explanations.
+No extra text.
 
 Required keys:
 - scenario_type
@@ -70,7 +72,6 @@ def run_adversarial_ai(recon_output: str):
             "regulatory_relevance": ["AI Act", "DORA", "GDPR"],
             "severity": "critical"
         }
-
     elif scenario == "input_perturbation":
         fallback_output = {
             "scenario_type": "ai_or_data_attack",
@@ -96,7 +97,6 @@ def run_adversarial_ai(recon_output: str):
             "regulatory_relevance": ["AI Act", "DORA"],
             "severity": "high"
         }
-
     else:
         fallback_output = {
             "scenario_type": "ai_or_data_attack",

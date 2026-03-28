@@ -48,10 +48,17 @@ def try_parse_json(text: str):
 def validate_required_keys(parsed: dict, required_keys: list[str]) -> bool:
     if not isinstance(parsed, dict):
         return False
-    for key in required_keys:
-        if key not in parsed:
-            return False
-    return True
+    return all(key in parsed for key in required_keys)
+
+
+def clean_final_output(data: dict):
+    if not isinstance(data, dict):
+        return data
+    cleaned = dict(data)
+    cleaned.pop("_mode", None)
+    cleaned.pop("_reason", None)
+    cleaned.pop("_raw_model_output", None)
+    return cleaned
 
 
 def map_recon_structure(parsed: dict):
@@ -60,9 +67,9 @@ def map_recon_structure(parsed: dict):
 
     return {
         "target_systems": [c.get("name", "unknown") for c in components if isinstance(c, dict)],
-        "critical_assets": components,
+        "critical_assets": components if isinstance(components, list) else [],
         "data_flows": [],
-        "critical_dependencies": vendors,
+        "critical_dependencies": vendors if isinstance(vendors, list) else [],
         "entry_vectors": ["Model-generated"],
         "attack_surface_map": ["Model-generated"],
         "assumptions": ["Generated from LLM response"],
@@ -75,36 +82,22 @@ def safe_run(agent, prompt: str, fallback_output: dict, required_keys: list[str]
     use_fallback = os.getenv("USE_FALLBACK", "1").lower() in ("1", "true", "yes")
 
     if use_fallback:
-        fallback_output["_mode"] = "forced_fallback"
-        fallback_output["_reason"] = "API disabled or fallback forced"
-        return json.dumps(fallback_output, indent=2, ensure_ascii=False)
+        return json.dumps(clean_final_output(fallback_output), indent=2, ensure_ascii=False)
 
     try:
         result = agent.run(prompt)
         text = to_text(result)
 
-        try:
-            parsed = try_parse_json(text)
+        parsed = try_parse_json(text)
 
-            if required_keys and not validate_required_keys(parsed, required_keys):
-                if agent_type == "recon":
-                    mapped = map_recon_structure(parsed)
-                    return json.dumps(mapped, indent=2, ensure_ascii=False)
+        if required_keys and validate_required_keys(parsed, required_keys):
+            return json.dumps(clean_final_output(parsed), indent=2, ensure_ascii=False)
 
-                fallback_output["_mode"] = "fallback_after_invalid_structure"
-                fallback_output["_reason"] = f"Model JSON missing required keys: {required_keys}"
-                fallback_output["_raw_model_output"] = parsed
-                return json.dumps(fallback_output, indent=2, ensure_ascii=False)
+        if agent_type == "recon" and isinstance(parsed, dict):
+            mapped = map_recon_structure(parsed)
+            return json.dumps(clean_final_output(mapped), indent=2, ensure_ascii=False)
 
-            return json.dumps(parsed, indent=2, ensure_ascii=False)
+        return json.dumps(clean_final_output(fallback_output), indent=2, ensure_ascii=False)
 
-        except Exception:
-            fallback_output["_mode"] = "fallback_after_invalid_json"
-            fallback_output["_reason"] = "Model returned non-compliant JSON"
-            fallback_output["_raw_model_output"] = text
-            return json.dumps(fallback_output, indent=2, ensure_ascii=False)
-
-    except Exception as e:
-        fallback_output["_mode"] = "fallback_after_exception"
-        fallback_output["_reason"] = str(e)
-        return json.dumps(fallback_output, indent=2, ensure_ascii=False)
+    except Exception:
+        return json.dumps(clean_final_output(fallback_output), indent=2, ensure_ascii=False)

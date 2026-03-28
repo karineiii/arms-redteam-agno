@@ -19,10 +19,12 @@ def build_risk_agent():
         instructions="""
 You are the Impact & Risk Scoring Agent.
 
-Return ONLY one valid raw JSON object.
-Do not use markdown.
-Do not use code fences.
-Do not write explanations.
+Your task is to compute the final business and regulatory risk.
+
+Return ONLY one valid JSON object.
+No markdown.
+No explanations.
+No extra text.
 
 Required keys:
 - global_risk_score

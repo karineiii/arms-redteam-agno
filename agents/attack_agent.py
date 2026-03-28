@@ -19,10 +19,12 @@ def build_attack_agent():
         instructions="""
 You are the Attack Agent of an agentic banking Red Team.
 
-Return ONLY one valid raw JSON object.
-Do not use markdown.
-Do not use code fences.
-Do not write explanations.
+Your task is to produce ONE conventional or supporting cyber attack scenario.
+
+Return ONLY one valid JSON object.
+No markdown.
+No explanations.
+No extra text.
 
 Required keys:
 - scenario_type
@@ -69,7 +71,6 @@ def run_attack(recon_output: str):
             "regulatory_relevance": ["DORA", "MiCA"],
             "severity": "high"
         }
-
     elif scenario == "third_party_outage":
         fallback_output = {
             "scenario_type": "conventional_cyber_attack",
@@ -95,7 +96,6 @@ def run_attack(recon_output: str):
             "regulatory_relevance": ["DORA", "MiCA"],
             "severity": "medium"
         }
-
     elif scenario == "ai_poisoning":
         fallback_output = {
             "scenario_type": "supporting_cyber_condition",
@@ -119,7 +119,6 @@ def run_attack(recon_output: str):
             "regulatory_relevance": ["AI Act", "DORA"],
             "severity": "high"
         }
-
     else:
         fallback_output = {
             "scenario_type": "supporting_cyber_condition",
