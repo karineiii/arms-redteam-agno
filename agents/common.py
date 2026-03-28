@@ -54,7 +54,24 @@ def validate_required_keys(parsed: dict, required_keys: list[str]) -> bool:
     return True
 
 
-def safe_run(agent, prompt: str, fallback_output: dict, required_keys: list[str] | None = None):
+def map_recon_structure(parsed: dict):
+    components = parsed.get("components", [])
+    vendors = parsed.get("vendors", [])
+
+    return {
+        "target_systems": [c.get("name", "unknown") for c in components if isinstance(c, dict)],
+        "critical_assets": components,
+        "data_flows": [],
+        "critical_dependencies": vendors,
+        "entry_vectors": ["Model-generated"],
+        "attack_surface_map": ["Model-generated"],
+        "assumptions": ["Generated from LLM response"],
+        "confidence_score": 0.7,
+        "scenario_context": os.getenv("SCENARIO", "unknown"),
+    }
+
+
+def safe_run(agent, prompt: str, fallback_output: dict, required_keys: list[str] | None = None, agent_type: str = "generic"):
     use_fallback = os.getenv("USE_FALLBACK", "1").lower() in ("1", "true", "yes")
 
     if use_fallback:
@@ -66,35 +83,18 @@ def safe_run(agent, prompt: str, fallback_output: dict, required_keys: list[str]
         result = agent.run(prompt)
         text = to_text(result)
 
-        if "insufficient_quota" in text.lower():
-            fallback_output["_mode"] = "fallback_after_api_error"
-            fallback_output["_reason"] = text
-            return json.dumps(fallback_output, indent=2, ensure_ascii=False)
-
         try:
             parsed = try_parse_json(text)
 
             if required_keys and not validate_required_keys(parsed, required_keys):
-                try:
-                    mapped = {
-                        "target_systems": parsed.get("components", []),
-                        "critical_assets": parsed.get("components", []),
-                        "data_flows": [],
-                        "critical_dependencies": parsed.get("vendors", []),
-                        "entry_vectors": ["Model-generated"],
-                        "attack_surface_map": ["Model-generated"],
-                        "assumptions": ["Generated from LLM response"],
-                        "confidence_score": 0.7,
-                        "scenario_context": os.getenv("SCENARIO", "unknown"),
-                    }
-
+                if agent_type == "recon":
+                    mapped = map_recon_structure(parsed)
                     return json.dumps(mapped, indent=2, ensure_ascii=False)
 
-                except Exception:
-                    fallback_output["_mode"] = "fallback_after_invalid_structure"
-                    fallback_output["_reason"] = f"Model JSON missing required keys: {required_keys}"
-                    fallback_output["_raw_model_output"] = parsed
-                    return json.dumps(fallback_output, indent=2, ensure_ascii=False)
+                fallback_output["_mode"] = "fallback_after_invalid_structure"
+                fallback_output["_reason"] = f"Model JSON missing required keys: {required_keys}"
+                fallback_output["_raw_model_output"] = parsed
+                return json.dumps(fallback_output, indent=2, ensure_ascii=False)
 
             return json.dumps(parsed, indent=2, ensure_ascii=False)
 

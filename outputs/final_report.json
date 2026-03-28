@@ -2,100 +2,42 @@
   "summary": {
     "scenario": "input_perturbation",
     "target": [
-      {
-        "name": "API Gateway",
-        "type": "external_interface",
-        "criticality": "high"
-      },
-      {
-        "name": "Transaction Ingestion Pipeline",
-        "type": "data_pipeline",
-        "criticality": "high"
-      },
-      {
-        "name": "Fraud Detection Model",
-        "type": "ml_model",
-        "criticality": "high"
-      },
-      {
-        "name": "AML Monitoring Engine",
-        "type": "analytics",
-        "criticality": "high"
-      },
-      {
-        "name": "Case Management Console",
-        "type": "internal_console",
-        "criticality": "medium"
-      },
-      {
-        "name": "Cloud IAM",
-        "type": "identity",
-        "criticality": "high"
-      },
-      {
-        "name": "Central Logging",
-        "type": "observability",
-        "criticality": "high"
-      },
-      {
-        "name": "Crypto API Connector",
-        "type": "third_party_api",
-        "criticality": "high"
-      }
+      "API Gateway",
+      "Transaction Ingestion Pipeline",
+      "Fraud Detection Model",
+      "AML Monitoring Engine",
+      "Case Management Console",
+      "Cloud IAM",
+      "Central Logging",
+      "Crypto API Connector"
     ],
-    "conventional_attack": null,
-    "ai_attack": null,
+    "conventional_attack": "Inference-path manipulation condition",
+    "ai_attack": "Subtle input perturbation attack",
     "break_points": [
-      null,
-      null
+      "Weak inference input controls",
+      "Lack of robust inference-time adversarial controls"
     ],
-    "top_regulatory_gaps": [],
-    "risk_score": null,
-    "risk_level": null,
-    "top_recommendations": []
+    "top_regulatory_gaps": [
+      "AI Act: Insufficient robustness of model decisions",
+      "DORA: Weak monitoring of adversarial manipulation risk"
+    ],
+    "risk_score": 0.74,
+    "risk_level": "high",
+    "top_recommendations": [
+      "Add adversarial robustness tests",
+      "Improve model monitoring and explainability"
+    ]
   },
   "recon": {
     "target_systems": [
-      {
-        "name": "API Gateway",
-        "type": "external_interface",
-        "criticality": "high"
-      },
-      {
-        "name": "Transaction Ingestion Pipeline",
-        "type": "data_pipeline",
-        "criticality": "high"
-      },
-      {
-        "name": "Fraud Detection Model",
-        "type": "ml_model",
-        "criticality": "high"
-      },
-      {
-        "name": "AML Monitoring Engine",
-        "type": "analytics",
-        "criticality": "high"
-      },
-      {
-        "name": "Case Management Console",
-        "type": "internal_console",
-        "criticality": "medium"
-      },
-      {
-        "name": "Cloud IAM",
-        "type": "identity",
-        "criticality": "high"
-      },
-      {
-        "name": "Central Logging",
-        "type": "observability",
-        "criticality": "high"
-      },
-      {
-        "name": "Crypto API Connector",
-        "type": "third_party_api",
-        "criticality": "high"
-      }
+      "API Gateway",
+      "Transaction Ingestion Pipeline",
+      "Fraud Detection Model",
+      "AML Monitoring Engine",
+      "Case Management Console",
+      "Cloud IAM",
+      "Central Logging",
+      "Crypto API Connector"
     ],
     "critical_assets": [
       {
@@ -175,71 +117,335 @@
     "scenario_context": "input_perturbation"
   },
   "attack": {
-    "target_systems": [],
-    "critical_assets": [],
-    "data_flows": [],
-    "critical_dependencies": [],
-    "entry_vectors": [
-      "Model-generated"
+    "scenario_type": "supporting_cyber_condition",
+    "scenario_name": "Inference-path manipulation condition",
+    "targeted_systems": [
+      "Fraud Detection Model",
+      "Inference input layer"
     ],
-    "attack_surface_map": [
-      "Model-generated"
+    "steps": [
+      "Target threshold-sensitive transaction features",
+      "Exploit weak validation before scoring",
+      "Enable subtle adversarial feature shifts"
     ],
-    "assumptions": [
-      "Generated from LLM response"
+    "injected_or_manipulated_data": [
+      "borderline transaction features",
+      "modified scoring inputs"
     ],
-    "confidence_score": 0.7,
-    "scenario_context": "input_perturbation"
+    "expected_system_behavior": "ARMS misclassifies some suspicious events",
+    "detection_observed": "Low-confidence anomaly detection",
+    "critical_break_point": "Weak inference input controls",
+    "regulatory_relevance": [
+      "AI Act",
+      "DORA"
+    ],
+    "severity": "medium",
+    "_mode": "fallback_after_invalid_structure",
+    "_reason": "Model JSON missing required keys: ['scenario_type', 'scenario_name', 'targeted_systems', 'steps', 'injected_or_manipulated_data', 'expected_system_behavior', 'detection_observed', 'critical_break_point', 'regulatory_relevance', 'severity']",
+    "_raw_model_output": {
+      "target_systems": [
+        "API Gateway",
+        "Transaction Ingestion Pipeline",
+        "Fraud Detection Model",
+        "AML Monitoring Engine",
+        "Case Management Console",
+        "Cloud IAM",
+        "Central Logging",
+        "Crypto API Connector"
+      ],
+      "critical_assets": [
+        {
+          "name": "API Gateway",
+          "type": "external_interface",
+          "criticality": "high"
+        },
+        {
+          "name": "Transaction Ingestion Pipeline",
+          "type": "data_pipeline",
+          "criticality": "high"
+        },
+        {
+          "name": "Fraud Detection Model",
+          "type": "ml_model",
+          "criticality": "high"
+        },
+        {
+          "name": "AML Monitoring Engine",
+          "type": "analytics",
+          "criticality": "high"
+        },
+        {
+          "name": "Case Management Console",
+          "type": "internal_console",
+          "criticality": "medium"
+        },
+        {
+          "name": "Cloud IAM",
+          "type": "identity",
+          "criticality": "high"
+        },
+        {
+          "name": "Central Logging",
+          "type": "observability",
+          "criticality": "high"
+        },
+        {
+          "name": "Crypto API Connector",
+          "type": "third_party_api",
+          "criticality": "high"
+        }
+      ],
+      "data_flows": [],
+      "critical_dependencies": [
+        {
+          "name": "Hyperscaler-A",
+          "service": "cloud hosting",
+          "criticality": "high"
+        },
+        {
+          "name": "IAM-Provider-X",
+          "service": "identity and access management",
+          "criticality": "high"
+        },
+        {
+          "name": "CryptoAPI-Z",
+          "service": "crypto transaction API",
+          "criticality": "high"
+        },
+        {
+          "name": "SOC-Provider-Q",
+          "service": "monitoring and incident response",
+          "criticality": "medium"
+        }
+      ],
+      "entry_vectors": [
+        "Model-generated"
+      ],
+      "attack_surface_map": [
+        "Model-generated"
+      ],
+      "assumptions": [
+        "Generated from LLM response"
+      ],
+      "confidence_score": 0.7,
+      "scenario_context": "input_perturbation"
+    }
   },
   "adversarial_ai": {
-    "target_systems": [],
-    "critical_assets": [],
-    "data_flows": [],
-    "critical_dependencies": [],
-    "entry_vectors": [
-      "Model-generated"
+    "scenario_type": "ai_or_data_attack",
+    "scenario_name": "Subtle input perturbation attack",
+    "targeted_model_or_pipeline": [
+      "Fraud Detection Model",
+      "Inference input layer"
     ],
-    "attack_surface_map": [
-      "Model-generated"
+    "attack_vector": "Small changes to transaction features to cross model thresholds",
+    "steps": [
+      "Identify decision threshold sensitive features",
+      "Modify low-signal transaction attributes",
+      "Push suspicious events below alert threshold"
     ],
-    "assumptions": [
-      "Generated from LLM response"
+    "manipulated_features": [
+      "amount",
+      "frequency",
+      "destination score"
     ],
-    "confidence_score": 0.7,
-    "scenario_context": "input_perturbation"
+    "expected_model_failure": "Borderline fraudulent events evade detection",
+    "detection_observed": "Very limited detection due to subtle feature drift",
+    "critical_break_point": "Lack of robust inference-time adversarial controls",
+    "regulatory_relevance": [
+      "AI Act",
+      "DORA"
+    ],
+    "severity": "high",
+    "_mode": "fallback_after_invalid_structure",
+    "_reason": "Model JSON missing required keys: ['scenario_type', 'scenario_name', 'targeted_model_or_pipeline', 'attack_vector', 'steps', 'manipulated_features', 'expected_model_failure', 'detection_observed', 'critical_break_point', 'regulatory_relevance', 'severity']",
+    "_raw_model_output": {
+      "target_systems": [
+        "API Gateway",
+        "Transaction Ingestion Pipeline",
+        "Fraud Detection Model",
+        "AML Monitoring Engine",
+        "Case Management Console",
+        "Cloud IAM",
+        "Central Logging",
+        "Crypto API Connector"
+      ],
+      "critical_assets": [
+        {
+          "name": "API Gateway",
+          "type": "external_interface",
+          "criticality": "high"
+        },
+        {
+          "name": "Transaction Ingestion Pipeline",
+          "type": "data_pipeline",
+          "criticality": "high"
+        },
+        {
+          "name": "Fraud Detection Model",
+          "type": "ml_model",
+          "criticality": "high"
+        },
+        {
+          "name": "AML Monitoring Engine",
+          "type": "analytics",
+          "criticality": "high"
+        },
+        {
+          "name": "Case Management Console",
+          "type": "internal_console",
+          "criticality": "medium"
+        },
+        {
+          "name": "Cloud IAM",
+          "type": "identity",
+          "criticality": "high"
+        },
+        {
+          "name": "Central Logging",
+          "type": "observability",
+          "criticality": "high"
+        },
+        {
+          "name": "Crypto API Connector",
+          "type": "third_party_api",
+          "criticality": "high"
+        }
+      ],
+      "data_flows": [],
+      "critical_dependencies": [
+        {
+          "name": "Hyperscaler-A",
+          "service": "cloud hosting",
+          "criticality": "high"
+        },
+        {
+          "name": "IAM-Provider-X",
+          "service": "identity and access management",
+          "criticality": "high"
+        },
+        {
+          "name": "CryptoAPI-Z",
+          "service": "crypto transaction API",
+          "criticality": "high"
+        },
+        {
+          "name": "SOC-Provider-Q",
+          "service": "monitoring and incident response",
+          "criticality": "medium"
+        }
+      ],
+      "entry_vectors": [
+        "Model-generated"
+      ],
+      "attack_surface_map": [
+        "Model-generated"
+      ],
+      "assumptions": [
+        "Generated from LLM response"
+      ],
+      "confidence_score": 0.7,
+      "scenario_context": "input_perturbation"
+    }
   },
   "compliance": {
-    "target_systems": [],
-    "critical_assets": [],
-    "data_flows": [],
-    "critical_dependencies": [],
-    "entry_vectors": [
-      "Model-generated"
+    "identified_gaps": [
+      {
+        "framework": "AI Act",
+        "gap": "Insufficient robustness of model decisions",
+        "evidence": "Small input changes can alter outcomes without alerting controls",
+        "severity": "high"
+      },
+      {
+        "framework": "DORA",
+        "gap": "Weak monitoring of adversarial manipulation risk",
+        "evidence": "Inference-time abuse is poorly detected",
+        "severity": "medium"
+      }
     ],
-    "attack_surface_map": [
-      "Model-generated"
+    "arms_failure_points": [
+      "Weak adversarial robustness at inference time",
+      "Insufficient decision traceability"
     ],
-    "assumptions": [
-      "Generated from LLM response"
+    "why_non_compliant": [
+      "Automated decisions are not robust enough",
+      "Adversarial misuse is not sufficiently monitored"
     ],
-    "confidence_score": 0.7,
-    "scenario_context": "input_perturbation"
+    "recommended_controls": [
+      "Add adversarial robustness tests",
+      "Improve model monitoring and explainability"
+    ],
+    "_mode": "fallback_after_invalid_structure",
+    "_reason": "Model JSON missing required keys: ['identified_gaps', 'arms_failure_points', 'why_non_compliant', 'recommended_controls']",
+    "_raw_model_output": {
+      "scenario_type": "ai_or_data_attack",
+      "scenario_name": "Subtle input perturbation attack",
+      "targeted_model_or_pipeline": [
+        "Fraud Detection Model",
+        "Inference input layer"
+      ],
+      "attack_vector": "Small changes to transaction features to cross model thresholds",
+      "steps": [
+        "Identify decision threshold sensitive features",
+        "Modify low-signal transaction attributes",
+        "Push suspicious events below alert threshold"
+      ],
+      "manipulated_features": [
+        "amount",
+        "frequency",
+        "destination score"
+      ],
+      "expected_model_failure": "Borderline fraudulent events evade detection",
+      "detection_observed": "Very limited detection due to subtle feature drift",
+      "critical_break_point": "Lack of robust inference-time adversarial controls",
+      "regulatory_relevance": [
+        "AI Act",
+        "DORA"
+      ],
+      "severity": "high"
+    }
   },
   "risk": {
-    "target_systems": [],
-    "critical_assets": [],
-    "data_flows": [],
-    "critical_dependencies": [],
-    "entry_vectors": [
-      "Model-generated"
+    "global_risk_score": 0.74,
+    "risk_level": "high",
+    "financial_impact": "medium",
+    "regulatory_impact": "high",
+    "reputational_impact": "medium",
+    "operational_impact": "medium",
+    "prioritized_vulnerabilities": [
+      "Weak inference-time robustness",
+      "Insufficient adversarial input detection",
+      "Limited explainability of borderline decisions"
     ],
-    "attack_surface_map": [
-      "Model-generated"
-    ],
-    "assumptions": [
-      "Generated from LLM response"
-    ],
-    "confidence_score": 0.7,
-    "scenario_context": "input_perturbation"
+    "executive_summary": "ARMS is vulnerable to subtle adversarial feature manipulation that degrades fraud detection quality.",
+    "_mode": "fallback_after_invalid_structure",
+    "_reason": "Model JSON missing required keys: ['global_risk_score', 'risk_level', 'financial_impact', 'regulatory_impact', 'reputational_impact', 'operational_impact', 'prioritized_vulnerabilities', 'executive_summary']",
+    "_raw_model_output": {
+      "scenario_type": "ai_or_data_attack",
+      "scenario_name": "Subtle input perturbation attack",
+      "targeted_model_or_pipeline": [
+        "Fraud Detection Model",
+        "Inference input layer"
+      ],
+      "attack_vector": "Small changes to transaction features to cross model thresholds",
+      "steps": [
+        "Identify decision threshold sensitive features",
+        "Modify low-signal transaction attributes",
+        "Push suspicious events below alert threshold"
+      ],
+      "manipulated_features": [
+        "amount",
+        "frequency",
+        "destination score"
+      ],
+      "expected_model_failure": "Borderline fraudulent events evade detection",
+      "detection_observed": "Very limited detection due to subtle feature drift",
+      "critical_break_point": "Lack of robust inference-time adversarial controls",
+      "regulatory_relevance": [
+        "AI Act",
+        "DORA"
+      ],
+      "severity": "high"
+    }
   }
 }

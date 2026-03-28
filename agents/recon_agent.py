@@ -20,24 +20,29 @@ def build_recon_agent():
         instructions="""
 You are the Reconnaissance Agent of an agentic banking Red Team.
 
-You must analyze the ARMS architecture and external vendors.
+STRICT RULES:
+- Output ONLY valid JSON
+- NO markdown
+- NO explanation
+- EXACT keys required
 
-Return ONLY one valid raw JSON object.
-Do not use markdown.
-Do not use code fences.
-Do not write any explanation.
-Do not write any text before or after the JSON.
+JSON schema:
+{
+  "target_systems": [string],
+  "critical_assets": [object],
+  "data_flows": [object],
+  "critical_dependencies": [object],
+  "entry_vectors": [string],
+  "attack_surface_map": [string],
+  "assumptions": [string],
+  "confidence_score": number,
+  "scenario_context": string
+}
 
-The JSON must contain exactly these keys:
-- target_systems
-- critical_assets
-- data_flows
-- critical_dependencies
-- entry_vectors
-- attack_surface_map
-- assumptions
-- confidence_score
-- scenario_context
+IMPORTANT:
+- Do NOT use "components"
+- Do NOT use "vendors"
+- Use EXACT keys above
 """
     )
 
@@ -128,4 +133,10 @@ Return ONLY one raw JSON object with exactly the requested keys.
         "scenario_context",
     ]
 
-    return safe_run(agent, prompt, fallback_output, required_keys=required_keys)
+    return safe_run(
+        agent,
+        prompt,
+        fallback_output,
+        required_keys=required_keys,
+        agent_type="recon",
+    )

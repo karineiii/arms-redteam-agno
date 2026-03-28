@@ -1,4 +1,5 @@
 import os
+
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 
@@ -145,4 +146,10 @@ Return ONLY one raw JSON object with the required keys.
         "severity",
     ]
 
-    return safe_run(agent, prompt, fallback_output, required_keys=required_keys)
+    return safe_run(
+        agent,
+        prompt,
+        fallback_output,
+        required_keys=required_keys,
+        agent_type="adversarial_ai",
+    )

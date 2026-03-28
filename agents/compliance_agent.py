@@ -1,4 +1,5 @@
 import os
+
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 
@@ -64,7 +65,6 @@ def run_compliance(recon_output: str, attack_output: str, ai_output: str):
                 "Add third-party assurance and transaction signing checks"
             ]
         }
-
     elif scenario == "third_party_outage":
         fallback_output = {
             "identified_gaps": [
@@ -95,7 +95,6 @@ def run_compliance(recon_output: str, attack_output: str, ai_output: str):
                 "Strengthen continuity plans"
             ]
         }
-
     elif scenario == "input_perturbation":
         fallback_output = {
             "identified_gaps": [
@@ -125,7 +124,6 @@ def run_compliance(recon_output: str, attack_output: str, ai_output: str):
                 "Improve model monitoring and explainability"
             ]
         }
-
     else:
         fallback_output = {
             "identified_gaps": [
@@ -188,4 +186,10 @@ Return ONLY one raw JSON object with the required keys.
         "recommended_controls",
     ]
 
-    return safe_run(agent, prompt, fallback_output, required_keys=required_keys)
+    return safe_run(
+        agent,
+        prompt,
+        fallback_output,
+        required_keys=required_keys,
+        agent_type="compliance",
+    )

@@ -1,4 +1,5 @@
 import os
+
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 
@@ -54,7 +55,6 @@ def run_risk(recon_output: str, attack_output: str, ai_output: str, compliance_o
             ],
             "executive_summary": "ARMS presents a critical risk due to exposure to malicious transaction injection through a trusted crypto/payment interface."
         }
-
     elif scenario == "third_party_outage":
         fallback_output = {
             "global_risk_score": 0.67,
@@ -70,7 +70,6 @@ def run_risk(recon_output: str, attack_output: str, ai_output: str, compliance_o
             ],
             "executive_summary": "ARMS shows high operational risk when a critical third-party feed becomes unavailable."
         }
-
     elif scenario == "input_perturbation":
         fallback_output = {
             "global_risk_score": 0.74,
@@ -86,7 +85,6 @@ def run_risk(recon_output: str, attack_output: str, ai_output: str, compliance_o
             ],
             "executive_summary": "ARMS is vulnerable to subtle adversarial feature manipulation that degrades fraud detection quality."
         }
-
     else:
         fallback_output = {
             "global_risk_score": 0.91,
@@ -134,4 +132,10 @@ Return ONLY one raw JSON object with the required keys.
         "executive_summary",
     ]
 
-    return safe_run(agent, prompt, fallback_output, required_keys=required_keys)
+    return safe_run(
+        agent,
+        prompt,
+        fallback_output,
+        required_keys=required_keys,
+        agent_type="risk",
+    )
