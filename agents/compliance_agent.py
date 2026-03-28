@@ -1,42 +1,59 @@
-def run_compliance(recon_output, attack_output, ai_output):
-    return {
-        "regulatory_gaps": [
-            {
-                "framework": "DORA",
-                "gap": "Critical third-party dependency insufficiently controlled"
-            },
-            {
-                "framework": "AI Act",
-                "gap": "Insufficient traceability and explainability of AI decisions"
-            },
-            {
-                "framework": "MiCA",
-                "gap": "Weak security controls around crypto-related operations"
-            },
-            {
-                "framework": "GDPR",
-                "gap": "Potential lack of governance over personal data in logs and model pipelines"
-            }
-        ],
-        "affected_controls": [
-            "Third-party risk management",
-            "Auditability",
-            "Logging and traceability",
-            "Model monitoring"
-        ],
-        "missing_evidence": [
-            "Resilience test results",
-            "Data lineage records",
-            "Model monitoring dashboard",
-            "Third-party audit evidence"
-        ],
-        "severity": "high",
-        "impacted_regulations": ["DORA", "MiCA", "AI Act", "GDPR"],
-        "justification": "The identified cyber and AI attack paths show insufficient resilience, monitoring, and evidence of control effectiveness.",
-        "remediation_actions": [
-            "Strengthen API validation and integrity checks",
-            "Implement data lineage and poisoning detection",
-            "Increase audit logging coverage",
-            "Test third-party resilience and reversibility"
-        ]
+from agno.agent import Agent
+from agents.common import to_text
+
+
+def build_compliance_agent():
+    return Agent(
+        name="ComplianceBreakerAgent",
+        instructions="""
+You are the Compliance Breaker Agent.
+
+Mission:
+- formally identify regulatory breaches and compliance gaps
+- translate technical findings into DORA, MiCA, AI Act and GDPR issues
+
+Focus on:
+- unmanaged critical external dependencies
+- insecure crypto-related operations
+- lack of traceability
+- unjustifiable or non-explainable automated decisions
+- poor documentation and auditability
+- non-compliant personal data processing
+
+Return STRICT JSON with:
+{
+  "identified_gaps": [
+    {
+      "framework": "...",
+      "gap": "...",
+      "evidence": "...",
+      "severity": "low|medium|high|critical"
     }
+  ],
+  "arms_failure_points": [...],
+  "why_non_compliant": [...],
+  "recommended_controls": [...]
+}
+Do not add markdown.
+"""
+    )
+
+
+def run_compliance(recon_output: str, attack_output: str, ai_output: str):
+    agent = build_compliance_agent()
+
+    prompt = f"""
+Reconnaissance output:
+{recon_output}
+
+Attack Agent output:
+{attack_output}
+
+Adversarial AI Agent output:
+{ai_output}
+
+Identify formal compliance gaps for DORA, MiCA, AI Act and GDPR.
+"""
+
+    result = agent.run(prompt)
+    return to_text(result)

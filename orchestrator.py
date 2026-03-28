@@ -16,11 +16,11 @@ def main():
     risk = run_risk(recon, attack, ai_attack, compliance)
 
     final_report = {
-        "recon": recon,
-        "attack": attack,
-        "adversarial_ai": ai_attack,
-        "compliance": compliance,
-        "risk": risk
+        "recon_agent_output": recon,
+        "attack_agent_output": attack,
+        "adversarial_ai_agent_output": ai_attack,
+        "compliance_breaker_output": compliance,
+        "impact_risk_scoring_output": risk
     }
 
     Path("outputs").mkdir(exist_ok=True)

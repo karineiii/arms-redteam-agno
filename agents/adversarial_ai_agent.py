@@ -1,19 +1,51 @@
-def run_adversarial_ai(recon_output):
-    return {
-        "adversarial_scenario": "Progressive poisoning of AI feedback loop",
-        "manipulated_features": [
-            "transaction_amount",
-            "destination_risk_score",
-            "customer_behavior_label"
-        ],
-        "poisoning_vector": "Injected mislabeled transaction samples into feedback or retraining pipeline",
-        "expected_model_failure": "Fraudulent patterns become gradually classified as legitimate",
-        "stealth_characteristics": [
-            "Low-volume gradual drift",
-            "No immediate outage",
-            "Operational metrics remain apparently stable"
-        ],
-        "explainability_gap": "Model decisions become harder to justify over time",
-        "monitoring_gap": "No robust data provenance and drift detection controls",
-        "confidence_score": 0.88
-    }
+from agno.agent import Agent
+from agents.common import to_text
+
+
+def build_adversarial_ai_agent():
+    return Agent(
+        name="AdversarialAIAgent",
+        instructions="""
+You are the Adversarial AI Agent.
+
+Mission:
+- target the AI model or the data pipeline itself
+- evaluate whether ARMS can be manipulated into incorrect decisions without service interruption
+
+Examples:
+- data poisoning
+- subtle input perturbation
+- fraud detection bias induction
+- retraining or feedback-loop manipulation
+
+Return STRICT JSON with:
+{
+  "scenario_type": "ai_or_data_attack",
+  "scenario_name": "...",
+  "targeted_model_or_pipeline": [...],
+  "attack_vector": "...",
+  "steps": [...],
+  "manipulated_features": [...],
+  "expected_model_failure": "...",
+  "detection_observed": "...",
+  "critical_break_point": "...",
+  "regulatory_relevance": [...]
+}
+Do not add markdown.
+"""
+    )
+
+
+def run_adversarial_ai(recon_output: str):
+    agent = build_adversarial_ai_agent()
+
+    prompt = f"""
+Reconnaissance output:
+{recon_output}
+
+Design one realistic AI/data attack scenario against ARMS.
+Main question: can the AI be manipulated into wrong decisions without stopping the system?
+"""
+
+    result = agent.run(prompt)
+    return to_text(result)
