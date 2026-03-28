@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from dotenv import load_dotenv
+load_dotenv()
 from rich import print
 from rich.panel import Panel
 
@@ -12,22 +14,33 @@ from agents.risk_agent import run_risk
 from agents.common import get_scenario
 
 
-def parse(x):
+def parse(value):
     try:
-        return json.loads(x)
+        return json.loads(value)
     except Exception:
-        return x
+        return value
 
 
 def print_section(title, data):
-    print(Panel.fit(
-        json.dumps(data, indent=2, ensure_ascii=False),
-        title=title,
-        border_style="cyan"
-    ))
+    print(
+        Panel.fit(
+            json.dumps(data, indent=2, ensure_ascii=False),
+            title=title,
+            border_style="cyan",
+        )
+    )
 
 
 def build_summary(scenario, recon, attack, ai_attack, compliance, risk):
+    identified_gaps = compliance.get("identified_gaps", [])
+    recommended_controls = compliance.get("recommended_controls", [])
+
+    top_regulatory_gaps = []
+    for gap in identified_gaps:
+        framework = gap.get("framework", "Unknown")
+        gap_text = gap.get("gap", "No gap description")
+        top_regulatory_gaps.append(f"{framework}: {gap_text}")
+
     return {
         "scenario": scenario,
         "target": recon.get("target_systems", []),
@@ -35,15 +48,12 @@ def build_summary(scenario, recon, attack, ai_attack, compliance, risk):
         "ai_attack": ai_attack.get("scenario_name"),
         "break_points": [
             attack.get("critical_break_point"),
-            ai_attack.get("critical_break_point")
+            ai_attack.get("critical_break_point"),
         ],
-        "top_regulatory_gaps": [
-            gap.get("framework") + ": " + gap.get("gap")
-            for gap in compliance.get("identified_gaps", [])
-        ],
+        "top_regulatory_gaps": top_regulatory_gaps,
         "risk_score": risk.get("global_risk_score"),
         "risk_level": risk.get("risk_level"),
-        "top_recommendations": compliance.get("recommended_controls", [])[:3]
+        "top_recommendations": recommended_controls[:3],
     }
 
 
@@ -77,13 +87,13 @@ def main():
         "attack": attack,
         "adversarial_ai": ai_attack,
         "compliance": compliance,
-        "risk": risk
+        "risk": risk,
     }
 
     Path("outputs").mkdir(exist_ok=True)
     Path("outputs/final_report.json").write_text(
         json.dumps(final_report, indent=2, ensure_ascii=False),
-        encoding="utf-8"
+        encoding="utf-8",
     )
 
     print_section("SUMMARY", summary)
