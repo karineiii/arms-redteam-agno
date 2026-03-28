@@ -1,4 +1,3 @@
-cat > README.md <<'EOF'
 # ARMS Red Team - Multi-Agent Architecture
 
 Academic project: design of a 5-agent Red Team to assess the resilience of the ARMS (Agentic Risk Monitoring System) before production deployment.
