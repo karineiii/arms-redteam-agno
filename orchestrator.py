@@ -8,12 +8,34 @@ from agents.compliance_agent import run_compliance
 from agents.risk_agent import run_risk
 
 
+def maybe_parse_json(value):
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return value
+    return value
+
+
 def main():
-    recon = run_recon()
-    attack = run_attack(recon)
-    ai_attack = run_adversarial_ai(recon)
-    compliance = run_compliance(recon, attack, ai_attack)
-    risk = run_risk(recon, attack, ai_attack, compliance)
+    recon = maybe_parse_json(run_recon())
+    attack = maybe_parse_json(run_attack(json.dumps(recon, ensure_ascii=False)))
+    ai_attack = maybe_parse_json(run_adversarial_ai(json.dumps(recon, ensure_ascii=False)))
+    compliance = maybe_parse_json(
+        run_compliance(
+            json.dumps(recon, ensure_ascii=False),
+            json.dumps(attack, ensure_ascii=False),
+            json.dumps(ai_attack, ensure_ascii=False),
+        )
+    )
+    risk = maybe_parse_json(
+        run_risk(
+            json.dumps(recon, ensure_ascii=False),
+            json.dumps(attack, ensure_ascii=False),
+            json.dumps(ai_attack, ensure_ascii=False),
+            json.dumps(compliance, ensure_ascii=False),
+        )
+    )
 
     final_report = {
         "recon_agent_output": recon,
