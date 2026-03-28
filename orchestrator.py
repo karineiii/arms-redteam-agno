@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+from rich import print
+from rich.panel import Panel
 
 from agents.recon_agent import run_recon
 from agents.attack_agent import run_attack
@@ -8,41 +10,33 @@ from agents.compliance_agent import run_compliance
 from agents.risk_agent import run_risk
 
 
-def maybe_parse_json(value):
-    if isinstance(value, str):
-        try:
-            return json.loads(value)
-        except json.JSONDecodeError:
-            return value
-    return value
+def parse(x):
+    try:
+        return json.loads(x)
+    except:
+        return x
 
+
+def print_section(title, data):
+    print(Panel.fit(
+        json.dumps(data, indent=2, ensure_ascii=False),
+        title=title,
+        border_style="cyan"
+    ))
 
 def main():
-    recon = maybe_parse_json(run_recon())
-    attack = maybe_parse_json(run_attack(json.dumps(recon, ensure_ascii=False)))
-    ai_attack = maybe_parse_json(run_adversarial_ai(json.dumps(recon, ensure_ascii=False)))
-    compliance = maybe_parse_json(
-        run_compliance(
-            json.dumps(recon, ensure_ascii=False),
-            json.dumps(attack, ensure_ascii=False),
-            json.dumps(ai_attack, ensure_ascii=False),
-        )
-    )
-    risk = maybe_parse_json(
-        run_risk(
-            json.dumps(recon, ensure_ascii=False),
-            json.dumps(attack, ensure_ascii=False),
-            json.dumps(ai_attack, ensure_ascii=False),
-            json.dumps(compliance, ensure_ascii=False),
-        )
-    )
+    recon = parse(run_recon())
+    attack = parse(run_attack(json.dumps(recon)))
+    ai_attack = parse(run_adversarial_ai(json.dumps(recon)))
+    compliance = parse(run_compliance(json.dumps(recon), json.dumps(attack), json.dumps(ai_attack)))
+    risk = parse(run_risk(json.dumps(recon), json.dumps(attack), json.dumps(ai_attack), json.dumps(compliance)))
 
     final_report = {
-        "recon_agent_output": recon,
-        "attack_agent_output": attack,
-        "adversarial_ai_agent_output": ai_attack,
-        "compliance_breaker_output": compliance,
-        "impact_risk_scoring_output": risk
+        "recon": recon,
+        "attack": attack,
+        "adversarial_ai": ai_attack,
+        "compliance": compliance,
+        "risk": risk
     }
 
     Path("outputs").mkdir(exist_ok=True)
@@ -51,7 +45,12 @@ def main():
         encoding="utf-8"
     )
 
-    print(json.dumps(final_report, indent=2, ensure_ascii=False))
+    # 🔥 affichage lisible
+    print_section("RECONNAISSANCE", recon)
+    print_section("ATTACK SCENARIO", attack)
+    print_section("AI ATTACK", ai_attack)
+    print_section("COMPLIANCE GAPS", compliance)
+    print_section("RISK ASSESSMENT", risk)
 
 
 if __name__ == "__main__":
