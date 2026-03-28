@@ -5,6 +5,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+VALID_SCENARIOS = {
+    "api_attack",
+    "third_party_outage",
+    "ai_poisoning",
+    "input_perturbation",
+}
+
 
 def load_json(path: str):
     return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -14,6 +21,14 @@ def to_text(result):
     if hasattr(result, "content"):
         return result.content
     return str(result)
+
+
+def get_scenario() -> str:
+    scenario = os.getenv("SCENARIO", "api_attack").strip()
+    if scenario not in VALID_SCENARIOS:
+        print(f"[WARN] Unknown SCENARIO='{scenario}'. Falling back to 'api_attack'.")
+        return "api_attack"
+    return scenario
 
 
 def safe_run(agent, prompt: str, fallback_output: dict):

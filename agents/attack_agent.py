@@ -1,6 +1,5 @@
-import os
 from agno.agent import Agent
-from agents.common import safe_run
+from agents.common import safe_run, get_scenario
 
 
 def build_attack_agent():
@@ -14,7 +13,7 @@ Return STRICT JSON only.
 
 
 def run_attack(recon_output: str):
-    scenario = os.getenv("SCENARIO", "api_attack")
+    scenario = get_scenario()
 
     if scenario == "api_attack":
         fallback_output = {
@@ -70,23 +69,51 @@ def run_attack(recon_output: str):
             "severity": "medium"
         }
 
-    else:
+    elif scenario == "ai_poisoning":
         fallback_output = {
-            "scenario_type": "conventional_cyber_attack",
-            "scenario_name": "Generic transaction manipulation",
-            "targeted_systems": ["API Gateway"],
+            "scenario_type": "supporting_cyber_condition",
+            "scenario_name": "Feedback loop exposure enabling poisoning",
+            "targeted_systems": [
+                "Fraud Detection Model",
+                "Retraining data pipeline"
+            ],
             "steps": [
-                "Send deceptive transaction events",
-                "Exploit weak validation logic"
+                "Identify retraining or feedback ingestion path",
+                "Abuse weak control over feedback acceptance",
+                "Allow poisoned labels to enter the ML pipeline"
             ],
             "injected_or_manipulated_data": [
-                "transaction payloads",
-                "risk flags"
+                "mislabeled feedback samples",
+                "corrupted training labels"
             ],
-            "expected_system_behavior": "ARMS misclassifies some events",
+            "expected_system_behavior": "ARMS continues operation while model quality degrades over time",
+            "detection_observed": "Low detection due to weak lineage and monitoring",
+            "critical_break_point": "Untrusted feedback data enters the retraining path",
+            "regulatory_relevance": ["AI Act", "DORA"],
+            "severity": "high"
+        }
+
+    else:
+        fallback_output = {
+            "scenario_type": "supporting_cyber_condition",
+            "scenario_name": "Inference-path manipulation condition",
+            "targeted_systems": [
+                "Fraud Detection Model",
+                "Inference input layer"
+            ],
+            "steps": [
+                "Target threshold-sensitive transaction features",
+                "Exploit weak validation before scoring",
+                "Enable subtle adversarial feature shifts"
+            ],
+            "injected_or_manipulated_data": [
+                "borderline transaction features",
+                "modified scoring inputs"
+            ],
+            "expected_system_behavior": "ARMS misclassifies some suspicious events",
             "detection_observed": "Low-confidence anomaly detection",
-            "critical_break_point": "Weak transaction controls",
-            "regulatory_relevance": ["DORA"],
+            "critical_break_point": "Weak inference input controls",
+            "regulatory_relevance": ["AI Act", "DORA"],
             "severity": "medium"
         }
 

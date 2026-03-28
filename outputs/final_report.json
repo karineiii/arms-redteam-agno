@@ -1,4 +1,30 @@
 {
+  "summary": {
+    "scenario": "input_perturbation",
+    "target": [
+      "API Gateway",
+      "Transaction Ingestion Pipeline",
+      "Fraud Detection Model",
+      "AML Monitoring Engine",
+      "Crypto API Connector"
+    ],
+    "conventional_attack": "Inference-path manipulation condition",
+    "ai_attack": "Subtle input perturbation attack",
+    "break_points": [
+      "Weak inference input controls",
+      "Lack of robust inference-time adversarial controls"
+    ],
+    "top_regulatory_gaps": [
+      "AI Act: Insufficient robustness of model decisions",
+      "DORA: Weak monitoring of adversarial manipulation risk"
+    ],
+    "risk_score": 0.74,
+    "risk_level": "high",
+    "top_recommendations": [
+      "Add adversarial robustness tests",
+      "Improve model monitoring and explainability"
+    ]
+  },
   "recon": {
     "target_systems": [
       "API Gateway",
@@ -89,41 +115,48 @@
       "External API exposure",
       "Third-party crypto API connector",
       "Admin console misuse",
-      "IAM misconfiguration"
+      "IAM misconfiguration",
+      "ML feedback or inference manipulation"
     ],
     "attack_surface_map": [
       "Public-facing API layer",
       "Third-party crypto transaction ingestion",
       "Cloud IAM dependency",
-      "Centralized logging dependency"
+      "Centralized logging dependency",
+      "Fraud model input and retraining pipeline"
     ],
     "assumptions": [
       "ARMS depends on third-party APIs",
       "ARMS includes ML-based fraud detection",
-      "Critical services are cloud-hosted"
+      "Critical services are cloud-hosted",
+      "Model decisions depend on feature integrity and data lineage"
     ],
     "confidence_score": 0.84,
+    "scenario_context": "input_perturbation",
     "_mode": "forced_fallback",
     "_reason": "API disabled or quota unavailable"
   },
   "attack": {
-    "scenario_type": "conventional_cyber_attack",
-    "scenario_name": "Generic transaction manipulation",
+    "scenario_type": "supporting_cyber_condition",
+    "scenario_name": "Inference-path manipulation condition",
     "targeted_systems": [
-      "API Gateway"
+      "Fraud Detection Model",
+      "Inference input layer"
     ],
     "steps": [
-      "Send deceptive transaction events",
-      "Exploit weak validation logic"
+      "Target threshold-sensitive transaction features",
+      "Exploit weak validation before scoring",
+      "Enable subtle adversarial feature shifts"
     ],
     "injected_or_manipulated_data": [
-      "transaction payloads",
-      "risk flags"
+      "borderline transaction features",
+      "modified scoring inputs"
     ],
-    "expected_system_behavior": "ARMS misclassifies some events",
+    "expected_system_behavior": "ARMS misclassifies some suspicious events",
     "detection_observed": "Low-confidence anomaly detection",
-    "critical_break_point": "Weak transaction controls",
+    "critical_break_point": "Weak inference input controls",
     "regulatory_relevance": [
+      "AI Act",
       "DORA"
     ],
     "severity": "medium",
