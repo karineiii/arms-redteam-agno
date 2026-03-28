@@ -1,13 +1,39 @@
+import os
 from agno.agent import Agent
+from agno.models.openai import OpenAIChat
+
 from agents.common import safe_run, get_scenario
 
 
 def build_attack_agent():
+    model = OpenAIChat(
+        id="llama-3.3-70b-versatile",
+        api_key=os.getenv("GROQ_API_KEY"),
+        base_url="https://api.groq.com/openai/v1",
+    )
+
     return Agent(
         name="AttackAgent",
+        model=model,
         instructions="""
 You are the Attack Agent of an agentic banking Red Team.
-Return STRICT JSON only.
+
+Return ONLY one valid raw JSON object.
+Do not use markdown.
+Do not use code fences.
+Do not write explanations.
+
+Required keys:
+- scenario_type
+- scenario_name
+- targeted_systems
+- steps
+- injected_or_manipulated_data
+- expected_system_behavior
+- detection_observed
+- critical_break_point
+- regulatory_relevance
+- severity
 """
     )
 
@@ -118,5 +144,27 @@ def run_attack(recon_output: str):
         }
 
     agent = build_attack_agent()
-    prompt = f"Reconnaissance output:\n{recon_output}"
-    return safe_run(agent, prompt, fallback_output)
+
+    prompt = f"""
+Scenario: {scenario}
+
+Reconnaissance output:
+{recon_output}
+
+Return ONLY one raw JSON object with the required keys.
+"""
+
+    required_keys = [
+        "scenario_type",
+        "scenario_name",
+        "targeted_systems",
+        "steps",
+        "injected_or_manipulated_data",
+        "expected_system_behavior",
+        "detection_observed",
+        "critical_break_point",
+        "regulatory_relevance",
+        "severity",
+    ]
+
+    return safe_run(agent, prompt, fallback_output, required_keys=required_keys)

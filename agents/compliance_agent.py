@@ -1,20 +1,39 @@
 import os
 from agno.agent import Agent
-from agents.common import safe_run
+from agno.models.openai import OpenAIChat
+
+from agents.common import safe_run, get_scenario
 
 
 def build_compliance_agent():
+    model = OpenAIChat(
+        id="llama-3.3-70b-versatile",
+        api_key=os.getenv("GROQ_API_KEY"),
+        base_url="https://api.groq.com/openai/v1",
+    )
+
     return Agent(
         name="ComplianceBreakerAgent",
+        model=model,
         instructions="""
 You are the Compliance Breaker Agent.
-Return STRICT JSON only.
+
+Return ONLY one valid raw JSON object.
+Do not use markdown.
+Do not use code fences.
+Do not write explanations.
+
+Required keys:
+- identified_gaps
+- arms_failure_points
+- why_non_compliant
+- recommended_controls
 """
     )
 
 
 def run_compliance(recon_output: str, attack_output: str, ai_output: str):
-    scenario = os.getenv("SCENARIO", "api_attack")
+    scenario = get_scenario()
 
     if scenario == "api_attack":
         fallback_output = {
@@ -146,5 +165,27 @@ def run_compliance(recon_output: str, attack_output: str, ai_output: str):
         }
 
     agent = build_compliance_agent()
-    prompt = f"Reconnaissance output:\n{recon_output}\n\nAttack output:\n{attack_output}\n\nAI output:\n{ai_output}"
-    return safe_run(agent, prompt, fallback_output)
+
+    prompt = f"""
+Scenario: {scenario}
+
+Reconnaissance output:
+{recon_output}
+
+Attack output:
+{attack_output}
+
+AI output:
+{ai_output}
+
+Return ONLY one raw JSON object with the required keys.
+"""
+
+    required_keys = [
+        "identified_gaps",
+        "arms_failure_points",
+        "why_non_compliant",
+        "recommended_controls",
+    ]
+
+    return safe_run(agent, prompt, fallback_output, required_keys=required_keys)
