@@ -118,7 +118,7 @@ python3 app.py
 ```
 Example .env file:  
 ```bash
-GROQ_API_KEY=your_key_here
+GROQ_API_KEY=the_key
 SCENARIO=api_attack
 USE_FALLBACK=0
 ```
