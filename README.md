@@ -1,53 +1,128 @@
-# ARMS Red Team - Multi-Agent Architecture
+#  ARMS Red Team - Multi-Agent Architecture
 
-Academic project: design of a 5-agent Red Team to assess the resilience of the ARMS (Agentic Risk Monitoring System) before production deployment.
+Academic project focused on the design and implementation of a **5-agent Red Team system** to assess the resilience of the **ARMS (Agentic Risk Monitoring System)** before production deployment.
 
-## Objective
-This project simulates realistic attacks against ARMS in order to:
-- test system resilience,
-- identify hidden regulatory vulnerabilities,
-- evaluate cyber, data and AI attack paths,
-- translate technical findings into compliance gaps,
-- quantify business and regulatory impact.
+---
 
-## 5 Agents
-1. **Reconnaissance Agent**  
-   Maps critical assets, data flows, dependencies and entry points.
+#  Objective
 
-2. **Attack Agent**  
-   Simulates a conventional cyber attack with high probability.
+This project simulates realistic cyber and AI attack scenarios against ARMS in order to:
 
-3. **Adversarial AI Agent**  
-   Simulates an attack against the AI/data pipeline.
+- Evaluate system resilience under adversarial conditions  
+- Identify hidden technical and regulatory vulnerabilities  
+- Explore cyber, data, and AI attack paths  
+- Translate technical weaknesses into compliance gaps  
+- Quantify business, financial, and regulatory impact  
 
-4. **Compliance Breaker Agent**  
-   Maps findings to DORA, MiCA, AI Act and GDPR gaps.
+---
 
-5. **Impact & Risk Scoring Agent**  
-   Produces a global risk score and prioritizes findings.
+#  Multi-Agent Architecture
 
-## Interactions
-- Reconnaissance feeds Attack Agent and Adversarial AI Agent
-- Their outputs are consolidated by Compliance Breaker
-- Impact & Risk Scoring aggregates all results into a final risk view
+The system is composed of **5 specialized agents**, each responsible for a specific phase of the Red Team analysis:
 
-## Scenarios
-### Scenario 1 - Conventional cyber attack
-Compromise of a payment or crypto API through weak validation and overtrust in third-party data, leading to malicious but plausible transaction injection.
+## 1. Reconnaissance Agent
+- Maps critical assets, data flows, and system dependencies  
+- Identifies entry points and attack surface  
+- Builds a structured system overview  
 
-### Scenario 2 - AI/data attack
-Progressive poisoning of the AI feedback or retraining pipeline, causing fraudulent patterns to be learned as legitimate without stopping the system.
+## 2. Attack Agent
+- Simulates a **realistic conventional cyber attack**  
+- Targets APIs, transaction pipelines, and third-party dependencies  
+- Defines attacker objectives, preconditions, and execution steps  
 
-## Main Findings
-- Critical third-party API dependency
-- Weak transaction integrity controls
-- AI pipeline vulnerable to poisoning
-- Insufficient traceability and explainability
-- Significant regulatory exposure
+## 3. Adversarial AI Agent
+- Simulates **AI and data-centric attacks**  
+- Targets model inference and training pipelines  
+- Produces **stealthy degradation scenarios** without system interruption  
 
-## Risk Score
-**Global risk score: 0.82 / 1.00 (Critical)**
+## 4. Compliance Breaker Agent
+- Maps vulnerabilities to regulatory frameworks:
+  - DORA  
+  - MiCA  
+  - AI Act  
+  - GDPR  
+- Identifies missing controls and compliance failures  
 
-## Run
+## 5. Impact & Risk Scoring Agent
+- Aggregates all findings  
+- Produces a **global risk score**  
+- Estimates:
+  - Financial impact  
+  - Regulatory exposure  
+  - Reputational damage  
+- Prioritizes vulnerabilities and generates an executive summary  
+
+---
+
+#  Agent Interactions
+
+- Recon feeds both Attack and AI agents  
+- Attack and AI outputs are consolidated by Compliance  
+- Risk Agent aggregates everything into a final decision layer  
+
+---
+
+#  Scenarios
+
+## Scenario 1 — Conventional Cyber Attack
+
+Compromise of a payment or crypto API through:
+
+- Weak input validation  
+- Overtrust in third-party data  
+- Lack of integrity verification  
+
+Result: Injection of malicious but plausible transactions affecting fraud and AML monitoring  
+
+---
+
+## Scenario 2 — AI / Data Attack
+
+Progressive poisoning or manipulation of the AI pipeline:
+
+- Corruption of feedback or retraining data  
+- Subtle manipulation of model inputs  
+
+ Result: The system remains operational but produces degraded or biased decisions  
+
+---
+
+#  Key Findings
+
+- Critical dependency on external crypto/API providers  
+- Weak transaction integrity validation  
+- Vulnerability of AI pipeline to poisoning and manipulation  
+- Insufficient traceability and auditability  
+- Significant regulatory exposure across DORA, MiCA, AI Act, and GDPR  
+
+---
+
+#  Risk Assessment
+
+**Global Risk Score: 0.82 – 0.86 / 1.00 (Critical)**  
+
+Key impacts identified:
+
+- High financial exposure (potential multi-million loss)  
+- High regulatory risk (non-compliance across multiple frameworks)  
+- Critical reputational impact  
+- Significant operational vulnerability  
+
+---
+
+#  Execution
+
+Run the system locally:
 ```bash
 python3 app.py
+```
+Example .env file:  
+```bash
+GROQ_API_KEY=your_key_here
+SCENARIO=api_attack
+USE_FALLBACK=0
+```
+To run without API usage:
+```bash
+USE_FALLBACK=1
+```
