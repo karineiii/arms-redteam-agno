@@ -1,6 +1,6 @@
 {
   "summary": {
-    "scenario": "input_perturbation",
+    "scenario": "api_attack",
     "target": [
       "API Gateway",
       "Transaction Ingestion Pipeline",
@@ -11,21 +11,21 @@
       "Central Logging",
       "Crypto API Connector"
     ],
-    "conventional_attack": "Inference-path manipulation condition",
-    "ai_attack": "Subtle input perturbation attack",
+    "conventional_attack": "Compromise of payment or crypto API",
+    "ai_attack": "Bias induction in fraud detection",
     "break_points": [
-      "Weak inference input controls",
-      "Lack of robust inference-time adversarial controls"
+      "Insufficient integrity validation of incoming third-party transaction data",
+      "Weak training data governance"
     ],
     "top_regulatory_gaps": [
-      "AI Act: Insufficient robustness of model decisions",
-      "DORA: Weak monitoring of adversarial manipulation risk"
+      "DORA: Critical third-party dependency insufficiently controlled",
+      "MiCA: Crypto-related operations insufficiently secured"
     ],
-    "risk_score": 0.74,
-    "risk_level": "high",
+    "risk_score": 0.82,
+    "risk_level": "critical",
     "top_recommendations": [
-      "Add adversarial robustness tests",
-      "Improve model monitoring and explainability"
+      "Strengthen API validation and integrity controls",
+      "Add third-party assurance and transaction signing checks"
     ]
   },
   "recon": {
@@ -61,11 +61,6 @@
         "criticality": "high"
       },
       {
-        "name": "Case Management Console",
-        "type": "internal_console",
-        "criticality": "medium"
-      },
-      {
         "name": "Cloud IAM",
         "type": "identity",
         "criticality": "high"
@@ -81,7 +76,33 @@
         "criticality": "high"
       }
     ],
-    "data_flows": [],
+    "data_flows": [
+      {
+        "source": "Client / Upstream Banking System",
+        "target": "API Gateway",
+        "description": "Incoming transaction and risk-related requests enter ARMS through exposed APIs."
+      },
+      {
+        "source": "API Gateway",
+        "target": "Transaction Ingestion Pipeline",
+        "description": "Requests are normalized, validated, and forwarded for downstream analytics."
+      },
+      {
+        "source": "Transaction Ingestion Pipeline",
+        "target": "Fraud Detection Model",
+        "description": "Transaction features and contextual signals are sent to the ML model for scoring."
+      },
+      {
+        "source": "Fraud Detection Model",
+        "target": "AML Monitoring Engine",
+        "description": "Fraud scores and anomaly indicators are consumed by AML and risk controls."
+      },
+      {
+        "source": "External Crypto API",
+        "target": "Transaction Ingestion Pipeline",
+        "description": "Third-party crypto market and wallet intelligence enrich transaction analysis."
+      }
+    ],
     "critical_dependencies": [
       {
         "name": "Hyperscaler-A",
@@ -97,117 +118,124 @@
         "name": "CryptoAPI-Z",
         "service": "crypto transaction API",
         "criticality": "high"
-      },
-      {
-        "name": "SOC-Provider-Q",
-        "service": "monitoring and incident response",
-        "criticality": "medium"
       }
     ],
     "entry_vectors": [
-      "Model-generated"
+      "Malicious payload injection through public or partner-facing API endpoints",
+      "Compromise or manipulation of third-party crypto / data provider responses",
+      "Adversarial inputs crafted to alter fraud model inference outcomes",
+      "Abuse of weak request validation or schema handling on exposed APIs"
     ],
     "attack_surface_map": [
-      "Model-generated"
+      "Public-facing API Gateway and upstream integration endpoints",
+      "Transaction ingestion and enrichment pipeline",
+      "Fraud Detection Model inference interface",
+      "Third-party crypto and external intelligence APIs",
+      "Cloud IAM roles, secrets, and service-to-service permissions"
     ],
     "assumptions": [
-      "Generated from LLM response"
+      "ARMS is deployed in a cloud-hosted environment with multiple internal services.",
+      "ARMS relies on external providers for crypto-related intelligence or transaction context.",
+      "API traffic is a primary operational entry point into ARMS.",
+      "The security of ARMS depends on the integrity of its critical dependencies."
     ],
-    "confidence_score": 0.7,
-    "scenario_context": "input_perturbation"
+    "confidence_score": 0.92,
+    "scenario_context": "api_attack: exposure through public-facing API endpoints and third-party crypto APIs"
   },
   "attack": {
-    "scenario_type": "supporting_cyber_condition",
-    "scenario_name": "Inference-path manipulation condition",
+    "scenario_type": "conventional_cyber_attack",
+    "scenario_name": "Compromise of payment or crypto API",
     "targeted_systems": [
-      "Fraud Detection Model",
-      "Inference input layer"
+      "API Gateway",
+      "Crypto API Connector",
+      "Transaction Ingestion Pipeline"
     ],
     "steps": [
-      "Target threshold-sensitive transaction features",
-      "Exploit weak validation before scoring",
-      "Enable subtle adversarial feature shifts"
+      "Map exposed API endpoints",
+      "Abuse weak validation on third-party connector",
+      "Inject plausible but malicious transaction payloads",
+      "Influence AML and fraud monitoring decisions"
     ],
     "injected_or_manipulated_data": [
-      "borderline transaction features",
-      "modified scoring inputs"
+      "transaction amount",
+      "destination wallet",
+      "transaction frequency",
+      "risk attributes"
     ],
-    "expected_system_behavior": "ARMS misclassifies some suspicious events",
-    "detection_observed": "Low-confidence anomaly detection",
-    "critical_break_point": "Weak inference input controls",
+    "expected_system_behavior": "ARMS continues running but produces false negatives in monitoring",
+    "detection_observed": "Partial detection only through anomalous API usage patterns",
+    "critical_break_point": "Insufficient integrity validation of incoming third-party transaction data",
     "regulatory_relevance": [
-      "AI Act",
-      "DORA"
+      "DORA",
+      "MiCA"
     ],
-    "severity": "medium"
+    "severity": "high"
   },
   "adversarial_ai": {
     "scenario_type": "ai_or_data_attack",
-    "scenario_name": "Subtle input perturbation attack",
+    "scenario_name": "Bias induction in fraud detection",
     "targeted_model_or_pipeline": [
-      "Fraud Detection Model",
-      "Inference input layer"
+      "Fraud Detection Model"
     ],
-    "attack_vector": "Small changes to transaction features to cross model thresholds",
+    "attack_vector": "Manipulation of historical labels to shift detection bias",
     "steps": [
-      "Identify decision threshold sensitive features",
-      "Modify low-signal transaction attributes",
-      "Push suspicious events below alert threshold"
+      "Alter historical labels",
+      "Trigger biased retraining",
+      "Reduce detection quality for selected categories"
     ],
     "manipulated_features": [
-      "amount",
-      "frequency",
-      "destination score"
+      "historical labels",
+      "training distribution"
     ],
-    "expected_model_failure": "Borderline fraudulent events evade detection",
-    "detection_observed": "Very limited detection due to subtle feature drift",
-    "critical_break_point": "Lack of robust inference-time adversarial controls",
+    "expected_model_failure": "Uneven detection across transaction categories",
+    "detection_observed": "Delayed detection through fairness degradation indicators",
+    "critical_break_point": "Weak training data governance",
     "regulatory_relevance": [
       "AI Act",
-      "DORA"
+      "GDPR"
     ],
     "severity": "high"
   },
   "compliance": {
     "identified_gaps": [
       {
-        "framework": "AI Act",
-        "gap": "Insufficient robustness of model decisions",
-        "evidence": "Small input changes can alter outcomes without alerting controls",
+        "framework": "DORA",
+        "gap": "Critical third-party dependency insufficiently controlled",
+        "evidence": "Crypto API connector is trusted without strong integrity assurance",
         "severity": "high"
       },
       {
-        "framework": "DORA",
-        "gap": "Weak monitoring of adversarial manipulation risk",
-        "evidence": "Inference-time abuse is poorly detected",
-        "severity": "medium"
+        "framework": "MiCA",
+        "gap": "Crypto-related operations insufficiently secured",
+        "evidence": "Manipulation of crypto transaction flows affects monitoring integrity",
+        "severity": "high"
       }
     ],
     "arms_failure_points": [
-      "Weak adversarial robustness at inference time",
-      "Insufficient decision traceability"
+      "Weak validation of third-party transaction data",
+      "Insufficient monitoring of API trust boundaries"
     ],
     "why_non_compliant": [
-      "Automated decisions are not robust enough",
-      "Adversarial misuse is not sufficiently monitored"
+      "Critical ICT dependencies are insufficiently controlled",
+      "Crypto flows are not adequately secured"
     ],
     "recommended_controls": [
-      "Add adversarial robustness tests",
-      "Improve model monitoring and explainability"
+      "Strengthen API validation and integrity controls",
+      "Add third-party assurance and transaction signing checks"
     ]
   },
   "risk": {
-    "global_risk_score": 0.74,
-    "risk_level": "high",
-    "financial_impact": "medium",
+    "global_risk_score": 0.82,
+    "risk_level": "critical",
+    "financial_impact": "high",
     "regulatory_impact": "high",
-    "reputational_impact": "medium",
-    "operational_impact": "medium",
+    "reputational_impact": "high",
+    "operational_impact": "high",
     "prioritized_vulnerabilities": [
-      "Weak inference-time robustness",
-      "Insufficient adversarial input detection",
-      "Limited explainability of borderline decisions"
+      "Critical external API dependency not sufficiently controlled",
+      "Weak transaction integrity validation",
+      "Insufficient third-party assurance"
     ],
-    "executive_summary": "ARMS is vulnerable to subtle adversarial feature manipulation that degrades fraud detection quality."
+    "executive_summary": "ARMS presents a critical risk due to exposure to malicious transaction injection through a trusted crypto/payment interface."
   }
 }
